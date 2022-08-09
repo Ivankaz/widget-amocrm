@@ -40,6 +40,44 @@ $errors = [
     503 => 'Service unavailable',
 ];
 
+/**
+ * Функция для получения значения поля элемента списка
+ * @param $customFieldsValues
+ * @param $customFieldCode
+ * @return mixed|null
+ */
+function getCustomFieldValue($customFieldsValues = [], $customFieldCode = '') {
+    // возвращаемое значение
+    $value = null;
+
+    // ищу поле по его коду
+    foreach ($customFieldsValues as $custom_field) {
+        if ($custom_field['field_code'] == $customFieldCode) {
+            $value = $custom_field['values'][0]['value'];
+        }
+    }
+
+    return $value;
+}
+
+/**
+ * Функция получения информации о товаре
+ * @param $product
+ * @return array
+ */
+function getProduct($product) {
+    // название товара
+    $name = $product['name'];
+    // количество товара
+    $quantity = getCustomFieldValue($product['custom_fields_values'], 'QUANTITY');
+
+    // возвращаю информацию о товаре
+    return [
+        'name' => $name,
+        'quantity' => $quantity,
+    ];
+}
+
 // обрабатываю ответ от сервера
 try {
     // если ответ от сервера неверный, вывожу ошибку
@@ -47,7 +85,11 @@ try {
         throw new Exception(isset($errors[$code]) ? $errors[$code] : 'Undefined error', $code);
     }
 
-    print_r($out);
+    // список товаров
+    $products = array_map('getProduct', $out['_embedded']['elements']);
+
+    // вывожу список товаров в формате JSON
+    echo json_encode($products, JSON_UNESCAPED_UNICODE);
 } catch (\Exception $e) {
     die('Error: ' . $e->getMessage() . PHP_EOL . 'Error code: ' . $e->getCode());
 }
