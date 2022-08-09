@@ -7,7 +7,23 @@ define(['jquery', 'underscore', 'twigjs'], function ($, _, Twig) {
             // вызывается при сборке виджета
             render: function () {
                 console.log('render');
-                console.log('self.system().area: ' + self.system().area);
+
+                // если открыли карточку сделки
+                if (self.system().area == 'lcard') {
+                    let $widgets_block = $('#widgets_block');
+
+                    // если кнопки ещё нет
+                    if ($widgets_block.find('#show_products_button').length == 0) {
+                        // добавляю кнопку в правую панель
+                        $widgets_block.append(
+                            self.render({ref: '/tmpl/controls/button.twig'}, {
+                                id: 'show_products_button',
+                                text: 'Посмотреть товары'
+                            })
+                        );
+                    }
+                }
+
                 return true;
             },
             // сбор необходимой информации, взаимодействие со сторонним сервером

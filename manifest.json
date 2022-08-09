@@ -17,17 +17,7 @@
     }
   },
   "locations": [
-    "lcard-1",
-    "llist-0",
-    "ccard-1",
-    "clist-0",
-    "comcard-0",
-    "card_sdk",
-    "settings",
-    "digital_pipeline",
-    "lead_sources",
-    "catalogs",
-    "advanced_settings"
+    "lcard-1"
   ],
   "tour": {
     "is_tour": true,
