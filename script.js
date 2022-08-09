@@ -1,4 +1,4 @@
-define(['jquery', 'underscore', 'twigjs'], function ($, _, Twig) {
+define(['jquery', 'underscore', 'twigjs', 'lib/components/base/modal'], function ($, _, Twig, Modal) {
     var CustomWidget = function () {
         var self = this, system = self.system;
 
@@ -14,6 +14,11 @@ define(['jquery', 'underscore', 'twigjs'], function ($, _, Twig) {
 
                     // если кнопки ещё нет
                     if ($widgets_block.find('#show_products_button').length == 0) {
+                        // путь к файлу стилей виджета
+                        let stylePath = self.params.path+'/style.css';
+                        // подключаю стили
+                        $('head').append('<link href="' + stylePath + '" rel="stylesheet">');
+
                         // добавляю кнопку в правую панель
                         $widgets_block.append(
                             self.render({ref: '/tmpl/controls/button.twig'}, {
@@ -30,11 +35,36 @@ define(['jquery', 'underscore', 'twigjs'], function ($, _, Twig) {
             // вызывается сразу после render одновременно с bind_actions
             init: function () {
                 console.log('init');
+
+                // заголовок таблицы с товарами
+                let thead = '<thead><tr><th>Название</th><th>Количество</th></tr></thead>';
+                // строки таблицы с товарами
+                let tbody = '<tbody><tr><td>Крыло от Боинга</td><td>2</td></tr></tbody>';
+                // таблица с товарами
+                self.productsTable = '<table>'+thead+tbody+'</table>';
+
                 return true;
             },
             // навешивает события на действия пользователя
             bind_actions: function () {
                 console.log('bind_actions');
+
+                // событие клика по кнопке просмотра товаров
+                $('#widgets_block #show_products_button').on('click', function() {
+                    // показываю модальное окно с товарами
+                    var modal = new Modal({
+                        class_name: 'products-modal-window',
+                        init: function ($modal_body) {
+                            $modal_body
+                                .trigger('modal:loaded') // запускаю отображение модального окна
+                                .html(self.productsTable) // добавляю вёрстку
+                                .trigger('modal:centrify');  // центрирую модальное окно
+                        },
+                        destroy: function () {
+                        }
+                    });
+                });
+
                 return true;
             },
             // вызывается при щелчке на иконку виджета в области настроек

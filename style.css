@@ -1,0 +1,13 @@
+.products-modal-window table {
+    width: 100%;
+}
+
+.products-modal-window th {
+    font-weight: bold;
+}
+
+.products-modal-window td, .products-modal-window th {
+    border: 1px solid gainsboro;
+    padding: 5px;
+}
+
