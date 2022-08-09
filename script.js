@@ -1,4 +1,4 @@
-define(['jquery', 'underscore', 'twigjs'], function ($, _, Twig) {
+define(['jquery', 'underscore', 'twigjs', 'lib/components/base/modal'], function ($, _, Twig, Modal) {
     var CustomWidget = function () {
         var self = this, system = self.system;
 
@@ -30,11 +30,36 @@ define(['jquery', 'underscore', 'twigjs'], function ($, _, Twig) {
             // вызывается сразу после render одновременно с bind_actions
             init: function () {
                 console.log('init');
+
+                // заголовок таблицы с товарами
+                let thead = '<thead><tr><td>Название</td><td>Количество</td></tr></thead>';
+                // строки таблицы с товарами
+                let tbody = '<tbody><tr><td>Крыло от Боинга</td><td>2</td></tr></tbody>';
+                // таблица с товарами
+                self.productsTable = '<table>'+thead+tbody+'</table>';
+
                 return true;
             },
             // навешивает события на действия пользователя
             bind_actions: function () {
                 console.log('bind_actions');
+
+                // событие клика по кнопке просмотра товаров
+                $('#widgets_block #show_products_button').on('click', function() {
+                    // показываю модальное окно с товарами
+                    var modal = new Modal({
+                        class_name: 'products-modal-window',
+                        init: function ($modal_body) {
+                            $modal_body
+                                .trigger('modal:loaded') // запускаю отображение модального окна
+                                .html(self.productsTable) // добавляю вёрстку
+                                .trigger('modal:centrify');  // центрирую модальное окно
+                        },
+                        destroy: function () {
+                        }
+                    });
+                });
+
                 return true;
             },
             // вызывается при щелчке на иконку виджета в области настроек
