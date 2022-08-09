@@ -14,6 +14,11 @@ define(['jquery', 'underscore', 'twigjs', 'lib/components/base/modal'], function
 
                     // если кнопки ещё нет
                     if ($widgets_block.find('#show_products_button').length == 0) {
+                        // путь к файлу стилей виджета
+                        let stylePath = self.params.path+'/style.css';
+                        // подключаю стили
+                        $('head').append('<link href="' + stylePath + '" rel="stylesheet">');
+
                         // добавляю кнопку в правую панель
                         $widgets_block.append(
                             self.render({ref: '/tmpl/controls/button.twig'}, {
@@ -32,7 +37,7 @@ define(['jquery', 'underscore', 'twigjs', 'lib/components/base/modal'], function
                 console.log('init');
 
                 // заголовок таблицы с товарами
-                let thead = '<thead><tr><td>Название</td><td>Количество</td></tr></thead>';
+                let thead = '<thead><tr><th>Название</th><th>Количество</th></tr></thead>';
                 // строки таблицы с товарами
                 let tbody = '<tbody><tr><td>Крыло от Боинга</td><td>2</td></tr></tbody>';
                 // таблица с товарами
