@@ -11,6 +11,9 @@ $headers = [
     'Authorization: Bearer ' . $access_token
 ];
 
+// разрешаю запросы с поддомена своего аккаунта на amoCRM
+header("Access-Control-Allow-Origin: https://$subdomain.amocrm.com");
+
 // делаю запрос к серверу amoCRM
 $curl = curl_init();
 curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
