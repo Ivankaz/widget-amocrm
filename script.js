@@ -15,7 +15,7 @@ define(['jquery', 'underscore', 'twigjs', 'lib/components/base/modal'], function
                     // если кнопки ещё нет
                     if ($widgets_block.find('#show_products_button').length == 0) {
                         // путь к файлу стилей виджета
-                        let stylePath = self.params.path+'/style.css';
+                        let stylePath = self.params.path + '/style.css';
                         // подключаю стили
                         $('head').append('<link href="' + stylePath + '" rel="stylesheet">');
 
@@ -36,12 +36,30 @@ define(['jquery', 'underscore', 'twigjs', 'lib/components/base/modal'], function
             init: function () {
                 console.log('init');
 
-                // заголовок таблицы с товарами
-                let thead = '<thead><tr><th>Название</th><th>Количество</th></tr></thead>';
-                // строки таблицы с товарами
-                let tbody = '<tbody><tr><td>Крыло от Боинга</td><td>2</td></tr></tbody>';
                 // таблица с товарами
-                self.productsTable = '<table>'+thead+tbody+'</table>';
+                self.productsTable = '';
+
+                // строки таблицы с товарами
+                let productRows = '';
+                // получаю товары со своего сервера
+                $.getJSON('https://ivankazakov.blog/public/amocrm/first-widget/widget.php', function (products) {
+                    if (products.length === 0) {
+                        // если товаров нет
+                        productRows += '<tr><td colspan="2">Товаров нет</td></tr>';
+                    } else {
+                        // если есть товары, добавляю их в таблицу
+                        for (let product of products) {
+                            productRows += '<tr><td>' + product.name + '</td><td>' + product.quantity + '</td></tr>';
+                        }
+
+                        // заголовок таблицы с товарами
+                        let thead = '<thead><tr><th>Название</th><th>Количество</th></tr></thead>';
+                        // строки таблицы с товарами
+                        let tbody = '<tbody>' + productRows + '</tbody>';
+                        // таблица с товарами
+                        self.productsTable = '<table>' + thead + tbody + '</table>';
+                    }
+                });
 
                 return true;
             },
@@ -50,7 +68,7 @@ define(['jquery', 'underscore', 'twigjs', 'lib/components/base/modal'], function
                 console.log('bind_actions');
 
                 // событие клика по кнопке просмотра товаров
-                $('#widgets_block #show_products_button').on('click', function() {
+                $('#widgets_block #show_products_button').on('click', function () {
                     // показываю модальное окно с товарами
                     var modal = new Modal({
                         class_name: 'products-modal-window',
