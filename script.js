@@ -29,37 +29,40 @@ define(['jquery', 'underscore', 'twigjs', 'lib/components/base/modal'], function
                     }
                 }
 
-                return true;
-            },
-            // сбор необходимой информации, взаимодействие со сторонним сервером
-            // вызывается сразу после render одновременно с bind_actions
-            init: function () {
-                console.log('init');
-
                 // таблица с товарами
                 self.productsTable = '';
 
                 // строки таблицы с товарами
                 let productRows = '';
                 // получаю товары со своего сервера
-                $.getJSON('https://ivankazakov.blog/public/amocrm/first-widget/widget.php', function (products) {
-                    if (products.length === 0) {
-                        // если товаров нет
-                        productRows += '<tr><td colspan="2">Товаров нет</td></tr>';
-                    } else {
-                        // если есть товары, добавляю их в таблицу
-                        for (let product of products) {
-                            productRows += '<tr><td>' + product.name + '</td><td>' + product.quantity + '</td></tr>';
-                        }
+                $.getJSON('https://ivankazakov.blog/public/amocrm/first-widget/widget.php', {
+                        'lead_id': AMOCRM.data.current_card.id
+                    },
+                    function (products) {
+                        if (products.length === 0) {
+                            // если товаров нет
+                            productRows += '<tr><td colspan="2">Товаров нет</td></tr>';
+                        } else {
+                            // если есть товары, добавляю их в таблицу
+                            for (let product of products) {
+                                productRows += '<tr><td>' + product.name + '</td><td>' + product.quantity + '</td></tr>';
+                            }
 
-                        // заголовок таблицы с товарами
-                        let thead = '<thead><tr><th>Название</th><th>Количество</th></tr></thead>';
-                        // строки таблицы с товарами
-                        let tbody = '<tbody>' + productRows + '</tbody>';
-                        // таблица с товарами
-                        self.productsTable = '<table>' + thead + tbody + '</table>';
-                    }
-                });
+                            // заголовок таблицы с товарами
+                            let thead = '<thead><tr><th>Название</th><th>Количество</th></tr></thead>';
+                            // строки таблицы с товарами
+                            let tbody = '<tbody>' + productRows + '</tbody>';
+                            // таблица с товарами
+                            self.productsTable = '<table>' + thead + tbody + '</table>';
+                        }
+                    });
+
+                return true;
+            },
+            // сбор необходимой информации, взаимодействие со сторонним сервером
+            // вызывается сразу после render одновременно с bind_actions
+            init: function () {
+                console.log('init');
 
                 return true;
             },
